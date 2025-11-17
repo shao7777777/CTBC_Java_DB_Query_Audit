@@ -70,4 +70,4 @@
 
 ## 連結 (Links)
 
-GitHub Repository (原始碼)：[]
+[ GitHub Repository ] (https://github.com/shao7777777/CTBC_Java_DB_Query_Audit.git)
