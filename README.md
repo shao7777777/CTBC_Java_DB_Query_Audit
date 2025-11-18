@@ -88,13 +88,17 @@ graph LR
 
 2. **程式碼精華與安全實踐** (Code Highlights & Security)
 - 登入稽核與會話 (Session) 建立：
-     ```login.jsp``` 負責接收使用者帳號密碼，透過 JDBC 查詢 dbo.member 資料表進行驗證。驗證成功後，立即建立 HttpSession，設定存取權杖 (access="y") 和 5 分鐘的會話過期時間，確保使用者在超時後必須重新登入。
-     <img width="400" height="266" alt="accesspage" src="https://github.com/user-attachments/assets/7221d692-8a8e-46c2-b093-24c13f5311c0" />
-     <img width="600" height="340" alt="login" src="https://github.com/user-attachments/assets/5f3f9a57-0d6a-4954-a59b-09e13aa65378" />
+  ```login.jsp``` 負責接收使用者帳號密碼，透過 JDBC 查詢 dbo.member 資料表進行驗證。驗證成功後，立即建立 HttpSession，設定存取權杖 (access="y") 和 5 分鐘的會話過期時間，確保使用者在超時後必須重新登入。
+  
+  <img width="441" height="266" alt="login" src="https://github.com/user-attachments/assets/b1efba53-7caa-44ba-afd9-a82b11e3a042" />
+  <img width="400" height="266" alt="accesspage" src="https://github.com/user-attachments/assets/7221d692-8a8e-46c2-b093-24c13f5311c0" />
+  <img width="600" height="340" alt="login_code" src="https://github.com/user-attachments/assets/5f3f9a57-0d6a-4954-a59b-09e13aa65378" />
      
 - 專案**未使用傳統字串串接來組合 SQL 語句**，而是採用 **PreparedStatement**。如下圖所示，透過 LIKE ? 佔位符和 pstmt.setString() 綁定參數，能有效防範 SQL 注入 (SQL Injection) 攻擊。
+
      <img width="400" height="229" alt="extensionsearch" src="https://github.com/user-attachments/assets/6c8c71ab-bdac-4902-8841-6943405a38bd" />
-     <img width="400" height="204" alt="extensionresult" src="https://github.com/user-attachments/assets/37967452-2011-4d72-8c74-952bcdfd3e95" />
+     <img width="446" height="229" alt="extensionresult" src="https://github.com/user-attachments/assets/37967452-2011-4d72-8c74-952bcdfd3e95" />
+     <img width="600" height="502" alt="extensionresult_code" src="https://github.com/user-attachments/assets/b51d37b6-ca34-4aff-9c57-0d37eb332e09" />
 
 ## 環境建置與執行指南 (Setup & Execution Guide)
 本專案需配置 Java 開發環境、MSSQL 資料庫，以及 Tomcat Web 伺服器。
@@ -121,7 +125,8 @@ graph LR
     (C:\Program Files\Apache Software Foundation\Tomcat 10.1)
 
 2. **配置 JDBC Driver**：
-  - 下載 Microsoft JDBC Driver for SQL Server (12.8.1)。(官方連結: https://learn.microsoft.com/zh-tw/sql/connect/jdbc/release-notes-for-the-jdbc-driver?view=sql-server-ver16 )。或是直接使用專案提供的檔案。
+  - 下載 Microsoft JDBC Driver for SQL Server (12.8.1)。
+  (官方連結: https://learn.microsoft.com/zh-tw/sql/connect/jdbc/release-notes-for-the-jdbc-driver?view=sql-server-ver16 )。或是直接使用專案提供的檔案。
   - 將 ``` mssql-jdbc-12.8.1.jre8.jar ```、``` mssql-jdbc-12.8.1.jre11.jar ``` 檔案複製到 **Tomcat** 安裝路徑下的 ```lib``` 資料夾中
     (```C:\Program Files\Apache Software Foundation\Tomcat 10.1\lib```)。
  
@@ -131,7 +136,7 @@ graph LR
   - 在 "**SERVERS**" 面板中，新增 **Tomcat Server**，指向本機安裝路徑：點擊右上角Creat New Serve圖示 > No, use server on disk > 選擇Tomcat 10.1(C:\Program Files\Apache Software Foundation) > finish
   - 在 "**JAVA PROJECTS**" 面板中，將 JDBC Jar 檔（``` mssql-jdbc-12.8.1.jre8.jar ```、``` mssql-jdbc-12.8.1.jre11.jar ```）加入專案的 **Reference Libraries**，以確保專案編譯與執行通過。
 
-**步驟二：檔案部署與執行**
+**步驟三：檔案部署與執行**
   - 將專案資料夾 ```MyJspProject``` 複製到 Tomcat 10.1 的 **webapps** 資料夾中。
   - 在 SQL Serve 驗證下登入情況下，於 VS code 執行 ```MyJavaProject``` 專案的```src/Main.java```，且終端機顯示「**連結成功**」。
   - 在 VS Code 的 "**SERVERS**" 面板中，對 Tomcat Server 點擊 "**Start Server**" 啟動伺服器。
