@@ -1,7 +1,7 @@
 # 資料庫查詢與稽核應用系統
 
 ## 專案簡介 (Project Introduction)
-這是一個基於** Java Web** 技術 (**JSP** + **Servlet**) 建構的**內部作業模擬系統**。專案核心目的是模擬企業後端開發實務，實踐**安全登入稽核**、**員工資訊查詢**及**產品資料查詢**等功能。系統採用經典的 **Tomcat 伺服器**搭配 **JDBC 驅動**，實現與 **Microsoft SQL Server (MSSQL)** 的高效、穩定的資料串接。
+這是一個基於**Java Web** 技術 (**JSP** + **Servlet**) 建構的**內部作業模擬系統**。專案核心目的是模擬企業後端開發實務，實踐**安全登入稽核**、**員工資訊查詢**及**產品資料查詢**等功能。系統採用經典的 **Tomcat 伺服器**搭配 **JDBC 驅動**，實現與 **Microsoft SQL Server (MSSQL)** 的高效、穩定的資料串接。
 
 本專案著重於展示：
 - **後端邏輯層 (Servlet)** 與 **前端呈現層 (JSP)** 的職責分離。
@@ -9,9 +9,9 @@
 - 對**資料存取權限**與**使用者身分驗證**的基礎安全思考。
 
 ## 核心功能 (Key Features)
-1. 安**全登入與稽核**： 驗證使用者身分，確保系統存取權限。
+1. **安全登入與稽核**： 驗證使用者身分，確保系統存取權限。
 2. **成員分機查詢**： 根據員工姓名或部門等條件，查詢員工聯繫資訊。
-3. **產品資訊查詢**： 查詢產品細節與狀態（基礎功能展示）。
+3. **產品資訊查詢**： 查詢產品細節與狀態。
 
 ## 技術堆疊 (Tech Stack)
 | 類別 | 技術名稱 | 說明 |
@@ -21,6 +21,69 @@
 | 資料存取 | Microsoft JDBC Driver 12.8.1 | Java 連結 MSSQL 的標準驅動。
 | Web 伺服器 | Apache Tomcat 10.1 | 作為 Web Container 運行 JSP/Servlet 應用。
 | 開發環境 | Visual Studio Code | 搭配 Extension Pack for Java, Community Server Connectors。
+
+## 核心系統流程 (System Flow)
+
+```mermaid
+graph LR
+    %% --- 樣式定義 (讓圖表更美觀) ---
+    classDef web fill:#e3f2fd,stroke:#1565c0,stroke-width:2px;
+    classDef db fill:#fff3e0,stroke:#ef6c00,stroke-width:2px,stroke-dasharray: 5 5;
+    classDef logic fill:#f3e5f5,stroke:#7b1fa2,stroke-width:1px;
+
+    %% --- 節點定義 ---
+    User((使用者))
+    DB[(MSSQL<br>資料庫)]
+    
+    subgraph Entry [入口與驗證]
+        direction TB
+        Main[main.jsp<br>首頁]
+        Check{Session?}
+        Login[login.jsp<br>登入頁]
+        Auth[驗證邏輯]
+    end
+
+    subgraph Hub [核心功能區]
+        direction TB
+        Menu[accesspage.jsp<br>功能選單]
+    end
+
+    subgraph Features [業務功能]
+        direction TB
+        Ext[分機查詢]
+        Prod[產品查詢]
+        Logout[登出]
+    end
+
+    %% --- 流程連線 ---
+    User --> Main
+    Main --> Check
+    
+    %% 登入邏輯
+    Check -- 無 --> Login
+    Login --> Auth
+    Auth <-->|JDBC 查詢| DB
+    Auth -- 失敗 --> Login
+    Auth -- 成功 --> Menu
+    Check -- 有 --> Menu
+
+    %% 功能選擇邏輯
+    Menu --> Ext
+    Menu --> Prod
+    Menu --> Logout
+
+    %% 功能執行細節
+    Ext --> ExtLogic[查詢處理] <-->|PreparedStatement| DB
+    Prod --> ProdLogic[查詢處理] <-->|PreparedStatement| DB
+
+    %% 登出回圈 (虛線表示狀態改變)
+    Logout -.->|Invalidate Session| Main
+
+    %% --- 套用樣式 ---
+    class Main,Login,Menu,Ext,Prod,Logout web;
+    class DB db;
+    class Auth,ExtLogic,ProdLogic logic;
+```
 
 ## 環境建置與執行指南 (Setup & Execution Guide)
 本專案需配置 Java 開發環境、MSSQL 資料庫，以及 Tomcat Web 伺服器。
@@ -61,13 +124,5 @@
   - 在 VS Code 的 "**SERVERS**" 面板中，對 Tomcat Server 點擊 "**Start Server**" 啟動伺服器。
   - 開啟瀏覽器，輸入：```localhost:8080/MyJspProject/main.jsp``` 即可存取。
 
-
-## 程式碼精華與架構 (Code Highlights)
-
-
-## 作品展示 (Demonstration)
-
-
 ## 連結 (Links)
-
 [ GitHub Repository ] (https://github.com/shao7777777/CTBC_Java_DB_Query_Audit.git)
