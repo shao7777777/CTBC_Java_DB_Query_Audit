@@ -22,8 +22,9 @@
 | Web 伺服器 | Apache Tomcat 10.1 | 作為 Web Container 運行 JSP/Servlet 應用。
 | 開發環境 | Visual Studio Code | 搭配 Extension Pack for Java, Community Server Connectors。
 
-## 核心系統流程 (System Flow)
+## 核心系統流程與功能展示 (Core System Flow & Features)
 
+1. **系統流程圖**(System Flowchart)
 ```mermaid
 graph LR
     %% --- 樣式定義 (讓圖表更美觀) ---
@@ -85,6 +86,16 @@ graph LR
     class Auth,ExtLogic,ProdLogic logic;
 ```
 
+2. **程式碼精華與安全實踐** (Code Highlights & Security)
+- 登入稽核與會話 (Session) 建立：
+     ```login.jsp``` 負責接收使用者帳號密碼，透過 JDBC 查詢 dbo.member 資料表進行驗證。驗證成功後，立即建立 HttpSession，設定存取權杖 (access="y") 和 5 分鐘的會話過期時間，確保使用者在超時後必須重新登入。
+     <img width="400" height="266" alt="accesspage" src="https://github.com/user-attachments/assets/7221d692-8a8e-46c2-b093-24c13f5311c0" />
+     <img width="600" height="340" alt="login" src="https://github.com/user-attachments/assets/5f3f9a57-0d6a-4954-a59b-09e13aa65378" />
+     
+- 專案**未使用傳統字串串接來組合 SQL 語句**，而是採用 **PreparedStatement**。如下圖所示，透過 LIKE ? 佔位符和 pstmt.setString() 綁定參數，能有效防範 SQL 注入 (SQL Injection) 攻擊。
+     <img width="400" height="229" alt="extensionsearch" src="https://github.com/user-attachments/assets/6c8c71ab-bdac-4902-8841-6943405a38bd" />
+     <img width="400" height="204" alt="extensionresult" src="https://github.com/user-attachments/assets/37967452-2011-4d72-8c74-952bcdfd3e95" />
+
 ## 環境建置與執行指南 (Setup & Execution Guide)
 本專案需配置 Java 開發環境、MSSQL 資料庫，以及 Tomcat Web 伺服器。
 
@@ -106,11 +117,13 @@ graph LR
 **步驟二：Web 伺服器與專案設定 (Tomcat & Project Setup)**
 1. **Tomcat 伺服器配置**：
   - 下載並安裝 **Apache Tomcat 10.1** (官方連結： https://tomcat.apache.org/download-10.cgi )。
-  - 確認 conf/server.xml 中 Resource name="UserDatabase" 設定正確。(C:\Program Files\Apache Software Foundation\Tomcat 10.1)
+  - 確認 conf/server.xml 中 Resource name="UserDatabase" 設定正確。
+    (C:\Program Files\Apache Software Foundation\Tomcat 10.1)
 
 2. **配置 JDBC Driver**：
-  - 下載 Microsoft JDBC Driver for SQL Server (12.8.1)。(官方連結: https://learn.microsoft.com/zh-tw/sql/connect/jdbc/release-notes-for-the-jdbc-driver?view=sql-server-ver16 )。或是直接使用專案提供的檔案
-  - 將 ``` mssql-jdbc-12.8.1.jre8.jar ```、``` mssql-jdbc-12.8.1.jre11.jar ``` 檔案複製到 **Tomcat** 安裝路徑下的 ```lib``` 資料夾中 (```C:\Program Files\Apache Software Foundation\Tomcat 10.1\lib```)。
+  - 下載 Microsoft JDBC Driver for SQL Server (12.8.1)。(官方連結: https://learn.microsoft.com/zh-tw/sql/connect/jdbc/release-notes-for-the-jdbc-driver?view=sql-server-ver16 )。或是直接使用專案提供的檔案。
+  - 將 ``` mssql-jdbc-12.8.1.jre8.jar ```、``` mssql-jdbc-12.8.1.jre11.jar ``` 檔案複製到 **Tomcat** 安裝路徑下的 ```lib``` 資料夾中
+    (```C:\Program Files\Apache Software Foundation\Tomcat 10.1\lib```)。
  
 3. **VS Code 開發環境配置**：
   - 安裝必要的 VS Code 擴充套件：**Extension Pack for Java**、**Database Client JDBC** 和 **Community Server Connectors**。
